@@ -8,6 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="modules\**" />
+    <Compile Remove="x64\**" />
+    <EmbeddedResource Remove="modules\**" />
+    <EmbeddedResource Remove="x64\**" />
+    <None Remove="modules\**" />
+    <None Remove="x64\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="iTextSharp" Version="5.5.13.3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
   </ItemGroup>
 
