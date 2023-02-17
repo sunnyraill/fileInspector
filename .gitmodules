@@ -1,0 +1,3 @@
+[submodule "modules/mupdf"]
+	path = modules/mupdf
+	url = https://github.com/ArtifexSoftware/mupdf.git
