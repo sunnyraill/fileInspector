@@ -30,10 +30,12 @@ namespace FileHash
             PdfArray filespecs = embeddedFiles.GetAsArray(PdfName.NAMES);
             if (filespecs == null || filespecs.Size == 0) return attachments;
 
-            for (int i = 0; i < filespecs.Size; i += 2)
+            for (int i = 0; i < filespecs.Size;)
             {
-                PdfDictionary filespec = filespecs.GetAsDict(i);
+                filespecs.GetAsString(i++); //ignore here
+                PdfDictionary filespec = filespecs.GetAsDict(i++);
                 PdfDictionary refs = filespec.GetAsDict(PdfName.EF);
+                PdfString attachmentName = filespec.GetAsString(PdfName.F);
                 if (refs == null) continue;
 
                 foreach (PdfName key in refs.Keys)
@@ -42,7 +44,7 @@ namespace FileHash
                     if (stream == null) continue;
 
                     // Create a MemoryStream and write the file content to it
-                    MemoryStream attachmentStream = new MemoryStream(stream.GetBytes()); 
+                    MemoryStream attachmentStream = new MemoryStream(PdfReader.GetStreamBytes(stream)); 
                     attachmentStream.Position = 0;
                     attachments.Add(attachmentStream);
                 }
@@ -158,9 +160,9 @@ namespace FileHash
                     var streamList = pdflib.GetAttachments(filePath);
                     foreach (var stream in streamList)
                     {
-                        string attahcment_hash = hashCalculator.calculateHash(hashCalculator.getFileData(filePath));
+                        string attahcment_hash = hashCalculator.calculateHash(stream.ToArray());
                         bool isattchmentMalicious = await virusTotalAPI.scanFile(attahcment_hash);
-                        Console.WriteLine("File {0} is malicious: {1}", filePath, isMalicious);
+                        Console.WriteLine("File {0} is malicious: {1}", attahcment_hash, isattchmentMalicious);
                     }
                 }
 
